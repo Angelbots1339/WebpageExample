@@ -27,7 +27,7 @@ public class Server {
     static class RootHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange t) throws IOException {
-            File file = new File("src/com/nate/server/Index.html");
+            File file = new File("resources/index.html");
             Headers h = t.getResponseHeaders();
             h.set("Content-Type", "text/html");
             
