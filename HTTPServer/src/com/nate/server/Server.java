@@ -15,19 +15,24 @@ import com.sun.net.httpserver.HttpServer;
 
 public class Server {
 	
-	static int port = 8080;
+	static int port = 8099;
 
     public static void main(String[] args) throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/", new RootHandler());
         server.createContext("/post", new PostHandler());
         server.start();
+        System.out.println("Server started");
     }
 
     static class RootHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange t) throws IOException {
-            File file = new File("resources/index.html");
+        	String path = t.getRequestURI().toString();
+        	File file;
+        	if(path.equals("/"))
+        		path = "/index.html";
+        	file = new File("resources" + path);
             Headers h = t.getResponseHeaders();
             h.set("Content-Type", "text/html");
             
@@ -41,6 +46,13 @@ public class Server {
             }
             fs.close();
             os.close();
+        }
+    }
+    
+    static class GetHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange t) throws IOException {
+        	
         }
     }
 
@@ -73,6 +85,7 @@ public class Server {
             default:
             	response = "Error!";
             }
+            System.out.println(response);
             t.sendResponseHeaders(200, response.length());
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
